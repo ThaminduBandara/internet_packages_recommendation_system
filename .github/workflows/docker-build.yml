@@ -2,8 +2,8 @@ name: Build and Push Docker Images
 
 on:
   push:
-    branches: [ "main" ]        # Trigger when pushing to the main branch
-  workflow_dispatch:             # Allow manual trigger from Actions tab
+    branches: [ "main" ]       
+  workflow_dispatch:          
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # ---------- FRONTEND ----------
+      # FRONTEND
       - name: Build and push FRONTEND image
         uses: docker/build-push-action@v6
         with:
@@ -31,7 +31,7 @@ jobs:
           tags: thamindubandara/internet_packages_recommendation_system-frontend:latest
           platforms: linux/amd64
 
-      # ---------- BACKEND ----------
+      # BACKEND
       - name: Build and push BACKEND image
         uses: docker/build-push-action@v6
         with:
