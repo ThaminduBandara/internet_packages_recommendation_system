@@ -84,7 +84,7 @@ const UserProfile = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
-      {/* Navbar */}
+
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
         <h1 className="text-2xl font-bold">My Profile</h1>
         <button
@@ -95,8 +95,8 @@ const UserProfile = () => {
         </button>
       </nav>
 
-      {/* Main Content */}
-      <div className="flex-1 container mx-auto px-4 py-10">
+    
+      <div className="flex-1 container mx-auto px-4 py-10 mt-4">
         <div className="w-full max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
           {error && (
             <div className="mb-6 p-4 text-red-700 bg-red-100 border border-red-300 rounded-lg text-center font-medium">

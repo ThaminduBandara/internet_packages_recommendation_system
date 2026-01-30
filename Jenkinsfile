@@ -51,6 +51,28 @@ pipeline {
       }
     }
 
+    stage('Deploy to EC2') {
+      steps {
+        sshagent(['ec2-ssh-key']) {  
+          sh '''
+          echo "Connecting to EC2 and deploying containers..."
+          ssh -o StrictHostKeyChecking=no ubuntu@3.6.90.33 << EOF
+            # Navigate to the project directory on EC2
+            cd /home/ubuntu/iprs  # Adjust path if necessary
+
+            # Pull the latest images from Docker Hub
+            docker compose pull
+
+            # Start the containers in detached mode (background)
+            docker compose up -d
+            
+            echo "Containers started successfully!"
+          EOF
+          '''
+        }
+      }
+    }
+
     stage('Cleanup') {
       steps {
         sh 'docker system prune -f || true'
@@ -60,10 +82,10 @@ pipeline {
 
   post {
     success {
-      echo "Build and push completed successfully!"
+      echo "Build, push, and deployment completed successfully!"
     }
     failure {
-      echo "Build failed — check console output for errors."
+      echo "Build or deployment failed — check console output for errors."
     }
   }
 }

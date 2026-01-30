@@ -15,7 +15,7 @@ export default function Signup() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const navigate = useNavigate(); // To navigate the user after successful signup
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,7 +56,7 @@ export default function Signup() {
           role: "user",
         });
 
-        // Redirect the user to the login page
+      
         navigate("/login");
       }
     } catch (err) {
@@ -70,11 +70,35 @@ export default function Signup() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
-      <div className="flex items-center justify-center flex-1">
+  
+      <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
+        <div className="flex items-center space-x-3">
+          <div>
+            <h1 className="text-2xl font-bold">PickPlan</h1>
+            <p className="text-xs text-blue-100">We choose the best internet plan for you...</p>
+          </div>
+        </div>
+        <div className="flex space-x-4">
+          <button
+            onClick={() => navigate("/guest")}
+            className="bg-blue-500 px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Guest Recommendation
+          </button>
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-blue-500 px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Login
+          </button>
+        </div>
+      </nav>
+
+      <div className="flex items-center justify-center flex-1 mt-4">
         <div className="w-full max-w-md p-10 bg-white rounded-3xl shadow-2xl border border-gray-200">
           <h1 className="text-3xl font-extrabold text-center text-blue-600 mb-1">PickPlan</h1>
           <p className="text-center text-green-600 mb-6 font-medium text-sm">
-            We choose the perfect internet plan for you
+            We choose the best internet plan for you...
           </p>
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Create Account</h2>
 
@@ -85,6 +109,53 @@ export default function Signup() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            
+            <div className="mb-6">
+              <label className="block text-gray-700 font-semibold mb-3">I am a:</label>
+              <div className="grid grid-cols-2 gap-3">
+                <label
+                  className={`flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    formData.role === "user"
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 bg-white hover:border-blue-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value="user"
+                    checked={formData.role === "user"}
+                    onChange={handleChange}
+                    className="hidden"
+                  />
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">👤</div>
+                    <span className="font-semibold text-gray-700">Normal User</span>
+                  </div>
+                </label>
+                <label
+                  className={`flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    formData.role === "provider"
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300 bg-white hover:border-green-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value="provider"
+                    checked={formData.role === "provider"}
+                    onChange={handleChange}
+                    className="hidden"
+                  />
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">🏢</div>
+                    <span className="font-semibold text-gray-700">Service Provider</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
             <input
               type="text"
               name="username"
@@ -102,16 +173,6 @@ export default function Signup() {
               onChange={handleChange}
               className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
             />
-
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
-            >
-              <option value="user">Normal User</option>
-              <option value="provider">Service Provider</option>
-            </select>
 
             <input
               type="password"

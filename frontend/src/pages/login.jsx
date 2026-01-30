@@ -12,7 +12,7 @@ export default function Login() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const navigate = useNavigate(); // To navigate after successful login
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,11 +67,35 @@ export default function Login() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
+    
+      <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
+        <div className="flex items-center space-x-3">
+          <div>
+            <h1 className="text-2xl font-bold">PickPlan</h1>
+            <p className="text-xs text-blue-100">We choose the best internet plan for you...</p>
+          </div>
+        </div>
+        <div className="flex space-x-4">
+          <button
+            onClick={() => navigate("/guest")}
+            className="bg-blue-500 px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Guest Recommendation
+          </button>
+          <button
+            onClick={() => navigate("/signup")}
+            className="bg-green-500 px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition"
+          >
+            Signup
+          </button>
+        </div>
+      </nav>
+
       <div className="flex items-center justify-center flex-1">
         <div className="w-full max-w-md p-10 bg-white rounded-3xl shadow-2xl border border-gray-200">
           <h1 className="text-3xl font-extrabold text-center text-blue-600 mb-1">PickPlan</h1>
           <p className="text-center text-green-600 mb-6 font-medium text-sm">
-            We choose the perfect internet plan for you
+            We choose the best internet plan for you...
           </p>
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Welcome Back!</h2>
 

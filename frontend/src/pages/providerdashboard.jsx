@@ -29,10 +29,14 @@ const ProviderDashboard = () => {
       const response = await axios.get(`${API_BASE_URL}/api/packages`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setPackages(response.data);
+     
+      const filteredPackages = response.data.filter(
+        (pkg) => pkg.serviceProvider === user.username
+      );
+      setPackages(filteredPackages);
       setStats({
-        totalPackages: response.data.length,
-        activePackages: response.data.length,
+        totalPackages: filteredPackages.length,
+        activePackages: filteredPackages.length,
       });
     } catch (error) {
       console.log("Demo data loaded");
@@ -96,11 +100,10 @@ const ProviderDashboard = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
-      {/* Navbar */}
+     
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
         <div className="flex items-center space-x-3">
-          <h1 className="text-2xl font-bold">PickPlan Provider Dashboard</h1>
-          <h1 className="text-2xl font-bold">Service Provider Dashboard</h1>
+          <h1 className="text-2xl font-bold">Dashboard</h1>
         </div>
         <div className="flex space-x-4">
           <button
@@ -118,9 +121,9 @@ const ProviderDashboard = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
+     
       <div className="container mx-auto px-4 py-10">
-        {/* Statistics Cards */}
+     
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
             <h3 className="text-gray-600 text-lg mb-2">Total Packages</h3>
@@ -132,7 +135,7 @@ const ProviderDashboard = () => {
           </div>
         </div>
 
-        {/* Add Package Button */}
+     
         <div className="flex justify-center mb-10">
           <button
             onClick={() => navigate("/add-package")}
@@ -142,7 +145,7 @@ const ProviderDashboard = () => {
           </button>
         </div>
 
-        {/* Packages List */}
+       
         <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
           <h2 className="text-2xl font-bold text-blue-600 mb-6">Your Packages</h2>
 

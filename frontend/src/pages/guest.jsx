@@ -146,11 +146,11 @@ const GuestRecommendation = () => {
       return;
     }
 
-    // Calculate closeness score for ALL packages
+    
     const scored = packages.map((pkg) => {
       let score = 0;
 
-      // Anytime Data closeness (weight: 20%)
+   
       const anytimeDataRatio = formData.anytimeData > 0 
         ? Math.min(pkg.anytimeData, formData.anytimeData) / formData.anytimeData
         : 1;
@@ -159,7 +159,7 @@ const GuestRecommendation = () => {
         : 0;
       score += (anytimeDataRatio - anytimeDataPenalty * 0.5) * 0.2;
 
-      // Night Data closeness (weight: 10%)
+      
       const nightDataRatio = formData.nightData > 0
         ? Math.min(pkg.nightTimeData, formData.nightData) / formData.nightData
         : 1;
@@ -168,7 +168,7 @@ const GuestRecommendation = () => {
         : 0;
       score += (nightDataRatio - nightDataPenalty * 0.5) * 0.1;
 
-      // Call Minutes closeness (weight: 20%)
+     
       const callRatio = formData.callMinutes > 0
         ? Math.min(pkg.callMinutes, formData.callMinutes) / formData.callMinutes
         : 1;
@@ -177,7 +177,7 @@ const GuestRecommendation = () => {
         : 0;
       score += (callRatio - callPenalty * 0.5) * 0.2;
 
-      // SMS closeness (weight: 10%)
+    
       const smsRatio = formData.sms > 0
         ? Math.min(pkg.sms, formData.sms) / formData.sms
         : 1;
@@ -186,13 +186,13 @@ const GuestRecommendation = () => {
         : 0;
       score += (smsRatio - smsPenalty * 0.5) * 0.1;
 
-      // Price closeness (weight: 30%) - closer to budget is better
+    
       const priceDiff = Math.abs(pkg.price - formData.budget);
       const maxPriceDiff = formData.budget;
       const priceScore = 1 - (priceDiff / maxPriceDiff);
       score += Math.max(0, priceScore) * 0.3;
 
-      // Social Media match (weight: 10%)
+     
       let socialMediaScore = 1;
       if (formData.socialMedia.length > 0) {
         const matchedPlatforms = formData.socialMedia.filter((platform) =>
@@ -205,11 +205,11 @@ const GuestRecommendation = () => {
       return { ...pkg, score };
     });
 
-    // Sort by score (highest first) and get the best match
+   
     scored.sort((a, b) => b.score - a.score);
     setRecommendedPackage(scored[0]);
     
-    // Show all packages except the recommended one
+  
     const otherPackages = scored.slice(1);
     setFilteredPackages(otherPackages);
     setHasRecommended(true);
@@ -217,10 +217,13 @@ const GuestRecommendation = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
-      {/* Navbar */}
+    
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
         <div className="flex items-center space-x-3">
-          <h1 className="text-2xl font-bold">PickPlan - Guest</h1>
+          <div>
+            <h1 className="text-2xl font-bold">PickPlan</h1>
+            <p className="text-xs text-blue-100">We choose the best internet plan for you...</p>
+          </div>
         </div>
         <div className="flex space-x-4">
           <button
@@ -238,9 +241,9 @@ const GuestRecommendation = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
+
       <div className="container mx-auto px-4 py-10">
-        {/* Recommendation Form */}
+      
         <div className="bg-white rounded-3xl shadow-2xl p-8 mb-10 border border-gray-200">
           <h2 className="text-2xl font-bold text-blue-600 mb-2">Find Your Perfect Package</h2>
           <p className="text-gray-600 mb-6">Browse packages without creating an account</p>
@@ -341,7 +344,7 @@ const GuestRecommendation = () => {
             </div>
           </div>
 
-          {/* Social Media Selection */}
+         
           <div className="mb-6">
             <label className="block text-gray-700 font-semibold mb-3">Social Media Platforms (Optional)</label>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -375,7 +378,7 @@ const GuestRecommendation = () => {
           </button>
         </div>
 
-        {/* Recommended Package */}
+      
         {recommendedPackage && (
           <div className="bg-yellow-50 rounded-3xl shadow-2xl p-8 mb-10 border-4 border-yellow-400">
             <h3 className="text-2xl font-bold text-yellow-600 mb-4">⭐ Recommended Package</h3>
@@ -413,7 +416,7 @@ const GuestRecommendation = () => {
           </div>
         )}
 
-        {/* All Packages */}
+      
         <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
           <h3 className="text-2xl font-bold text-blue-600 mb-6">
             {hasRecommended ? "Suitable Packages" : "Available Packages"}

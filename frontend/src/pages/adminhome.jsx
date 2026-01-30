@@ -7,14 +7,14 @@ const AdminHome = () => {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Example hardcoded service providers and their packages
+  
   const serviceProviders = [
     { name: "Mobitel", image: "https://via.placeholder.com/150" },
     { name: "Hutch", image: "https://via.placeholder.com/150" },
     { name: "Dialog", image: "https://via.placeholder.com/150" },
   ];
 
-  // Hardcoded packages data for each service provider
+ 
   const hardcodedPackages = {
     Mobitel: [
       { _id: "1", name: "Mobitel Package 1", anytimeData: 5, nightData: 2, callMinutes: 100, sms: 50 },
@@ -30,29 +30,29 @@ const AdminHome = () => {
     ],
   };
 
-  // Simulate fetching packages (using hardcoded data for now)
+  
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setPackages(hardcodedPackages);
       setLoading(false);
-    }, 1000); // Simulate a 1-second delay for fetching data
+    }, 1000); 
   }, []);
 
-  // Handle Logout
+ 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
-  // Handle Navigate to Add Package Page
+ 
   const handleAddPackage = () => {
     navigate("/add-package");
   };
 
   return (
     <div className="admin-home">
-      {/* Navbar */}
+     
       <nav className="flex items-center justify-between bg-blue-500 p-4 text-white">
         <div className="flex items-center space-x-3">
           <img src="https://via.placeholder.com/50" alt="Logo" className="rounded-full" />
@@ -74,7 +74,7 @@ const AdminHome = () => {
         </div>
       </nav>
 
-      {/* Add Package Button */}
+     
       <div className="flex justify-center mt-5">
         <button
           className="bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold text-lg hover:bg-blue-600 transition-all shadow-lg"
@@ -84,7 +84,6 @@ const AdminHome = () => {
         </button>
       </div>
 
-      {/* Packages Body */}
       <div className="container mx-auto mt-10 px-4">
         {loading ? (
           <p>Loading packages...</p>
@@ -126,7 +125,7 @@ const AdminHome = () => {
     </div>
   );
 
-  // Handle Package Deletion (Mocked)
+ 
   const handleDeletePackage = (packageId) => {
     const confirmation = window.confirm("Are you sure you want to delete this package?");
     if (confirmation) {
