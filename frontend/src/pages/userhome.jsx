@@ -49,64 +49,82 @@ const UserHome = () => {
         {
           _id: "1",
           name: "Basic Plan",
+          validationTime: 30,
           anytimeData: 5,
           nightTimeData: 2,
           callMinutes: 100,
           sms: 50,
           price: 500,
           serviceProvider: formData.serviceProvider,
+          socialMedia: ["WhatsApp", "Facebook"],
+          coverImage: "",
         },
         {
           _id: "2",
           name: "Standard Plan",
+          validationTime: 30,
           anytimeData: 10,
           nightTimeData: 5,
           callMinutes: 200,
           sms: 100,
           price: 800,
           serviceProvider: formData.serviceProvider,
+          socialMedia: ["Instagram", "YouTube"],
+          coverImage: "",
         },
         {
           _id: "3",
           name: "Premium Plan",
+          validationTime: 30,
           anytimeData: 20,
           nightTimeData: 10,
           callMinutes: 500,
           sms: 200,
           price: 1500,
           serviceProvider: formData.serviceProvider,
+          socialMedia: ["WhatsApp", "Facebook", "YouTube"],
+          coverImage: "",
         },
       ]);
       setFilteredPackages([
         {
           _id: "1",
           name: "Basic Plan",
+          validationTime: 30,
           anytimeData: 5,
           nightTimeData: 2,
           callMinutes: 100,
           sms: 50,
           price: 500,
           serviceProvider: formData.serviceProvider,
+          socialMedia: ["WhatsApp", "Facebook"],
+          coverImage: "",
         },
         {
           _id: "2",
           name: "Standard Plan",
+          validationTime: 30,
           anytimeData: 10,
           nightTimeData: 5,
           callMinutes: 200,
           sms: 100,
           price: 800,
           serviceProvider: formData.serviceProvider,
+          socialMedia: ["Instagram", "YouTube"],
+          coverImage: "",
         },
         {
           _id: "3",
           name: "Premium Plan",
+          validationTime: 30,
           anytimeData: 20,
           nightTimeData: 10,
           callMinutes: 500,
           sms: 200,
           price: 1500,
           serviceProvider: formData.serviceProvider,
+          socialMedia: ["WhatsApp", "Facebook", "YouTube"],
+          coverImage: "",
         },
       ]);
     } finally {
@@ -310,6 +328,13 @@ const UserHome = () => {
         {recommendedPackage && (
           <div className="bg-yellow-50 rounded-3xl shadow-2xl p-8 mb-10 border-4 border-yellow-400">
             <h3 className="text-2xl font-bold text-yellow-600 mb-4">⭐ Recommended Package</h3>
+            {recommendedPackage.coverImage && (
+              <img
+                src={recommendedPackage.coverImage}
+                alt={recommendedPackage.name}
+                className="w-full max-h-64 object-cover rounded-2xl mb-6 border border-yellow-200"
+              />
+            )}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-gray-600 text-sm">Anytime Data</p>
@@ -327,6 +352,12 @@ const UserHome = () => {
                 <p className="text-gray-600 text-sm">Price</p>
                 <p className="text-2xl font-bold text-green-600">Rs {recommendedPackage.price}</p>
               </div>
+            </div>
+            <div className="mt-6 text-gray-700">
+              <p><span className="font-semibold">Service Provider:</span> {recommendedPackage.serviceProvider}</p>
+              <p><span className="font-semibold">Validation:</span> {recommendedPackage.validationTime} Days</p>
+              <p><span className="font-semibold">SMS:</span> {recommendedPackage.sms}</p>
+              <p><span className="font-semibold">Social Media:</span> {recommendedPackage.socialMedia?.length ? recommendedPackage.socialMedia.join(", ") : "None"}</p>
             </div>
           </div>
         )}
@@ -350,8 +381,23 @@ const UserHome = () => {
                       : "border border-gray-300 bg-white hover:shadow-xl"
                   }`}
                 >
+                  {pkg.coverImage && (
+                    <img
+                      src={pkg.coverImage}
+                      alt={pkg.name}
+                      className="w-full h-40 object-cover rounded-xl mb-4 border border-gray-200"
+                    />
+                  )}
                   <h4 className="text-xl font-bold text-blue-600 mb-4">{pkg.name}</h4>
                   <div className="space-y-3 text-gray-700">
+                    <div className="flex justify-between">
+                      <span>Service Provider:</span>
+                      <span className="font-semibold">{pkg.serviceProvider}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Validation:</span>
+                      <span className="font-semibold">{pkg.validationTime} Days</span>
+                    </div>
                     <div className="flex justify-between">
                       <span>Anytime Data:</span>
                       <span className="font-semibold">{pkg.anytimeData} GB</span>
@@ -367,6 +413,12 @@ const UserHome = () => {
                     <div className="flex justify-between">
                       <span>SMS:</span>
                       <span className="font-semibold">{pkg.sms}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold">Social Media:</span>
+                      <span className="text-sm text-gray-600">
+                        {pkg.socialMedia && pkg.socialMedia.length > 0 ? pkg.socialMedia.join(", ") : "None"}
+                      </span>
                     </div>
                     <div className="flex justify-between border-t pt-3 mt-3">
                       <span className="font-bold">Price:</span>

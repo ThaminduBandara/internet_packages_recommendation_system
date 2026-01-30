@@ -7,7 +7,7 @@ const createPackage = async (req, res) => {
     return res.status(403).json({ message: "Access denied, provider only" });
   }
 
-  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider, socialMedia } = req.body;
+  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider, socialMedia, coverImage } = req.body;
 
   if (!name || !validationTime || !price || !anytimeData || !nightTimeData || !callMinutes || !sms || !serviceProvider) {
     return res.status(400).json({ message: "All fields are required." });
@@ -23,7 +23,8 @@ const createPackage = async (req, res) => {
       callMinutes,
       sms,
       serviceProvider,
-      socialMedia: socialMedia || false,
+      socialMedia: socialMedia || [],
+      coverImage: coverImage || "",
     });
 
     await newPackage.save();
@@ -61,13 +62,18 @@ const getPackagesByServiceProvider = async (req, res) => {
 
 const updatePackage = async (req, res) => {
   const { packageId } = req.params;
-  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, socialMedia } = req.body;
+  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, socialMedia, coverImage } = req.body;
 
   try {
+    const updateData = { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, socialMedia };
+    if (coverImage !== undefined) {
+      updateData.coverImage = coverImage;
+    }
+
     const updatedPackage = await Package.findByIdAndUpdate(
       packageId,
-      { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, socialMedia },
-      { new: true }  
+      updateData,
+      { new: true }
     );
 
     if (!updatedPackage) {

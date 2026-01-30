@@ -39,20 +39,28 @@ const ProviderDashboard = () => {
         {
           _id: "1",
           name: "Starter",
+          validationTime: 30,
           price: 500,
           anytimeData: 5,
           nightTimeData: 2,
           callMinutes: 100,
           sms: 50,
+          serviceProvider: "Demo Provider",
+          socialMedia: ["WhatsApp", "Facebook"],
+          coverImage: "",
         },
         {
           _id: "2",
           name: "Professional",
+          validationTime: 30,
           price: 1000,
           anytimeData: 20,
           nightTimeData: 10,
           callMinutes: 500,
           sms: 200,
+          serviceProvider: "Demo Provider",
+          socialMedia: ["YouTube", "Instagram"],
+          coverImage: "",
         },
       ];
       setPackages(demoData);
@@ -146,19 +154,46 @@ const ProviderDashboard = () => {
                   className="rounded-2xl p-6 shadow-lg border border-gray-300 bg-white hover:shadow-xl transition-all cursor-pointer"
                   onClick={() => navigate(`/package-view/${pkg._id}`)}
                 >
+                  {pkg.coverImage && (
+                    <img
+                      src={pkg.coverImage}
+                      alt={pkg.name}
+                      className="w-full h-40 object-cover rounded-xl mb-4 border border-gray-200"
+                    />
+                  )}
                   <h4 className="text-xl font-bold text-blue-600 mb-4">{pkg.name}</h4>
                   <div className="space-y-2 text-gray-700 mb-6">
                     <div className="flex justify-between">
-                      <span>Data:</span>
+                      <span>Service Provider:</span>
+                      <span className="font-semibold">{pkg.serviceProvider || user.username}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Validation:</span>
+                      <span className="font-semibold">{pkg.validationTime} Days</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Anytime Data:</span>
                       <span className="font-semibold">{pkg.anytimeData} GB</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Calls:</span>
+                      <span>Night Data:</span>
+                      <span className="font-semibold">{pkg.nightTimeData} GB</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Call Minutes:</span>
                       <span className="font-semibold">{pkg.callMinutes}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>SMS:</span>
                       <span className="font-semibold">{pkg.sms}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-semibold">Social Media:</span>
+                      <span className="text-sm text-gray-600">
+                        {pkg.socialMedia && pkg.socialMedia.length > 0
+                          ? pkg.socialMedia.join(", ")
+                          : "None"}
+                      </span>
                     </div>
                     <div className="flex justify-between border-t pt-3 mt-3">
                       <span className="font-bold">Price:</span>

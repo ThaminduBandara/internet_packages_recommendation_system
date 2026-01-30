@@ -38,6 +38,8 @@ const PackageView = () => {
           sms: 100,
           validationTime: 30,
           serviceProvider: "Demo Provider",
+          socialMedia: ["WhatsApp", "Facebook"],
+          coverImage: "",
         });
       }
     } catch (error) {
@@ -51,6 +53,8 @@ const PackageView = () => {
         sms: 100,
         validationTime: 30,
         serviceProvider: "Demo Provider",
+        socialMedia: ["WhatsApp", "Facebook"],
+        coverImage: "",
       });
     } finally {
       setLoading(false);
@@ -97,6 +101,14 @@ const PackageView = () => {
         <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
           <h2 className="text-3xl font-bold text-blue-600 mb-8">{package_data?.name}</h2>
 
+          {package_data?.coverImage && (
+            <img
+              src={package_data.coverImage}
+              alt={package_data.name}
+              className="w-full max-h-80 object-cover rounded-2xl mb-8 border border-gray-200"
+            />
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div className="space-y-6">
               <div>
@@ -133,6 +145,12 @@ const PackageView = () => {
               <div>
                 <p className="text-gray-600 text-sm font-semibold">SMS</p>
                 <p className="text-2xl font-bold text-blue-600">{package_data?.sms}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 text-sm font-semibold">Social Media</p>
+                <p className="text-lg font-semibold text-gray-800">
+                  {package_data?.socialMedia?.length ? package_data.socialMedia.join(", ") : "None"}
+                </p>
               </div>
             </div>
           </div>

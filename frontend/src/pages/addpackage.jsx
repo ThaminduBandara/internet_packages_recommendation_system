@@ -13,8 +13,11 @@ const AddPackage = () => {
     nightTimeData: "",
     callMinutes: "",
     sms: "",
-    socialMedia: false,
+    socialMedia: [],
+    coverImage: "",
   });
+
+  const socialMediaOptions = ["WhatsApp", "Facebook", "Instagram", "YouTube", "TikTok", "Twitter"];
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,8 +25,36 @@ const AddPackage = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSocialMediaChange = (platform) => {
+    const currentSocialMedia = formData.socialMedia || [];
+    if (currentSocialMedia.includes(platform)) {
+      setFormData({
+        ...formData,
+        socialMedia: currentSocialMedia.filter((item) => item !== platform),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        socialMedia: [...currentSocialMedia, platform],
+      });
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setFormData({ ...formData, coverImage: "" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData({ ...formData, coverImage: reader.result });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -58,6 +89,7 @@ const AddPackage = () => {
           sms: parseInt(formData.sms),
           serviceProvider: user.username || "Unknown Provider",
           socialMedia: formData.socialMedia,
+          coverImage: formData.coverImage,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -201,16 +233,39 @@ const AddPackage = () => {
             </div>
 
             <div>
-              <label className="flex items-center space-x-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="socialMedia"
-                  checked={formData.socialMedia}
-                  onChange={handleChange}
-                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
-                />
-                <span className="text-gray-700 font-semibold">Includes Social Media Data</span>
-              </label>
+              <label className="block text-gray-700 font-semibold mb-3">Available Social Media Platforms</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {socialMediaOptions.map((platform) => (
+                  <label key={platform} className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.socialMedia.includes(platform)}
+                      onChange={() => handleSocialMediaChange(platform)}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-400"
+                    />
+                    <span className="text-gray-700">{platform}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-3">Cover Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+              {formData.coverImage && (
+                <div className="mt-4">
+                  <img
+                    src={formData.coverImage}
+                    alt="Package cover preview"
+                    className="w-full max-h-56 object-cover rounded-xl border border-gray-200"
+                  />
+                </div>
+              )}
             </div>
 
             <button

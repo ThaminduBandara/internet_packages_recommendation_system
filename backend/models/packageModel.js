@@ -36,8 +36,12 @@ const packageSchema = new Schema(
       required: true, 
     },
     socialMedia: {
-      type: Boolean,
-      default: false,
+      type: [String],
+      default: [],
+    },
+    coverImage: {
+      type: String,
+      default: "",
     },
   },
   { timestamps: true }  
