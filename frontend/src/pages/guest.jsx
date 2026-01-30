@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
+import Footer from "../components/Footer";
 
 const GuestRecommendation = () => {
   const navigate = useNavigate();
@@ -19,7 +20,10 @@ const GuestRecommendation = () => {
     callMinutes: 100,
     sms: 50,
     budget: 1000,
+    socialMedia: [],
   });
+
+  const availableSocialMedia = ["WhatsApp", "Facebook", "Instagram", "YouTube", "TikTok", "Twitter"];
 
   useEffect(() => {
     fetchPackages();
@@ -129,53 +133,94 @@ const GuestRecommendation = () => {
     setFormData({ ...formData, [name]: parseFloat(value) || value });
   };
 
-  const recommendPackage = () => {
-    const suitable = packages.filter(
-      (pkg) =>
-        pkg.anytimeData >= formData.anytimeData &&
-        pkg.nightTimeData >= formData.nightData &&
-        pkg.callMinutes >= formData.callMinutes &&
-        pkg.sms >= formData.sms &&
-        pkg.price <= formData.budget
-    );
+  const handleSocialMediaChange = (platform) => {
+    const updated = formData.socialMedia.includes(platform)
+      ? formData.socialMedia.filter((p) => p !== platform)
+      : [...formData.socialMedia, platform];
+    setFormData({ ...formData, socialMedia: updated });
+  };
 
-    if (suitable.length === 0) {
-      alert("No packages meet your requirements. Try adjusting your criteria.");
-      setFilteredPackages([]);
+  const recommendPackage = () => {
+    if (packages.length === 0) {
+      alert("No packages available for this service provider.");
       return;
     }
 
-    const scored = suitable.map((pkg) => {
+    // Calculate closeness score for ALL packages
+    const scored = packages.map((pkg) => {
       let score = 0;
 
-      const dataScore = (pkg.anytimeData + pkg.nightTimeData) / (formData.anytimeData + formData.nightData);
-      score += dataScore * 0.3;
+      // Anytime Data closeness (weight: 20%)
+      const anytimeDataRatio = formData.anytimeData > 0 
+        ? Math.min(pkg.anytimeData, formData.anytimeData) / formData.anytimeData
+        : 1;
+      const anytimeDataPenalty = pkg.anytimeData < formData.anytimeData 
+        ? (formData.anytimeData - pkg.anytimeData) / formData.anytimeData 
+        : 0;
+      score += (anytimeDataRatio - anytimeDataPenalty * 0.5) * 0.2;
 
-      const callScore = pkg.callMinutes / formData.callMinutes;
-      score += callScore * 0.2;
+      // Night Data closeness (weight: 10%)
+      const nightDataRatio = formData.nightData > 0
+        ? Math.min(pkg.nightTimeData, formData.nightData) / formData.nightData
+        : 1;
+      const nightDataPenalty = pkg.nightTimeData < formData.nightData
+        ? (formData.nightData - pkg.nightTimeData) / formData.nightData
+        : 0;
+      score += (nightDataRatio - nightDataPenalty * 0.5) * 0.1;
 
-      const smsScore = pkg.sms / formData.sms;
-      score += smsScore * 0.1;
+      // Call Minutes closeness (weight: 20%)
+      const callRatio = formData.callMinutes > 0
+        ? Math.min(pkg.callMinutes, formData.callMinutes) / formData.callMinutes
+        : 1;
+      const callPenalty = pkg.callMinutes < formData.callMinutes
+        ? (formData.callMinutes - pkg.callMinutes) / formData.callMinutes
+        : 0;
+      score += (callRatio - callPenalty * 0.5) * 0.2;
 
-      const maxPrice = Math.max(...suitable.map((p) => p.price));
-      const priceScore = 1 - pkg.price / maxPrice;
-      score += priceScore * 0.4;
+      // SMS closeness (weight: 10%)
+      const smsRatio = formData.sms > 0
+        ? Math.min(pkg.sms, formData.sms) / formData.sms
+        : 1;
+      const smsPenalty = pkg.sms < formData.sms
+        ? (formData.sms - pkg.sms) / formData.sms
+        : 0;
+      score += (smsRatio - smsPenalty * 0.5) * 0.1;
+
+      // Price closeness (weight: 30%) - closer to budget is better
+      const priceDiff = Math.abs(pkg.price - formData.budget);
+      const maxPriceDiff = formData.budget;
+      const priceScore = 1 - (priceDiff / maxPriceDiff);
+      score += Math.max(0, priceScore) * 0.3;
+
+      // Social Media match (weight: 10%)
+      let socialMediaScore = 1;
+      if (formData.socialMedia.length > 0) {
+        const matchedPlatforms = formData.socialMedia.filter((platform) =>
+          (pkg.socialMedia || []).includes(platform)
+        );
+        socialMediaScore = matchedPlatforms.length / formData.socialMedia.length;
+      }
+      score += socialMediaScore * 0.1;
 
       return { ...pkg, score };
     });
 
+    // Sort by score (highest first) and get the best match
     scored.sort((a, b) => b.score - a.score);
     setRecommendedPackage(scored[0]);
-    setFilteredPackages(scored);
+    
+    // Show all packages except the recommended one
+    const otherPackages = scored.slice(1);
+    setFilteredPackages(otherPackages);
     setHasRecommended(true);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
       {/* Navbar */}
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
         <div className="flex items-center space-x-3">
-          <h1 className="text-2xl font-bold">Package Finder - Guest</h1>
+          <h1 className="text-2xl font-bold">PickPlan - Guest</h1>
         </div>
         <div className="flex space-x-4">
           <button
@@ -294,6 +339,32 @@ const GuestRecommendation = () => {
                 className="w-full"
               />
             </div>
+          </div>
+
+          {/* Social Media Selection */}
+          <div className="mb-6">
+            <label className="block text-gray-700 font-semibold mb-3">Social Media Platforms (Optional)</label>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {availableSocialMedia.map((platform) => (
+                <label
+                  key={platform}
+                  className="flex items-center space-x-2 cursor-pointer bg-gray-50 hover:bg-blue-50 p-3 rounded-lg border border-gray-200 transition"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.socialMedia.includes(platform)}
+                    onChange={() => handleSocialMediaChange(platform)}
+                    className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-400"
+                  />
+                  <span className="text-sm font-medium text-gray-700">{platform}</span>
+                </label>
+              ))}
+            </div>
+            {formData.socialMedia.length > 0 && (
+              <p className="text-sm text-gray-600 mt-2">
+                Selected: {formData.socialMedia.join(", ")}
+              </p>
+            )}
           </div>
 
           <button
@@ -415,6 +486,7 @@ const GuestRecommendation = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
+import Footer from "../components/Footer";
 
 const PackageView = () => {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ const PackageView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
       {/* Navbar */}
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
         <h1 className="text-2xl font-bold">Package Details</h1>
@@ -92,12 +93,12 @@ const PackageView = () => {
           onClick={() => navigate("/provider-dashboard")}
           className="bg-blue-500 px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
         >
-          Back to Dashboard
+          Back
         </button>
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-10">
+      <div className="flex-1 container mx-auto px-4 py-10">
         <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-200">
           <h2 className="text-3xl font-bold text-blue-600 mb-8">{package_data?.name}</h2>
 
@@ -171,6 +172,7 @@ const PackageView = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

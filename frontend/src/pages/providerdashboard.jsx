@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
+import Footer from "../components/Footer";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -94,10 +95,11 @@ const ProviderDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
       {/* Navbar */}
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
         <div className="flex items-center space-x-3">
+          <h1 className="text-2xl font-bold">PickPlan Provider Dashboard</h1>
           <h1 className="text-2xl font-bold">Service Provider Dashboard</h1>
         </div>
         <div className="flex space-x-4">
@@ -228,6 +230,7 @@ const ProviderDashboard = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
+import Footer from "../components/Footer";
 
 const ProviderProfile = () => {
   const navigate = useNavigate();
@@ -195,6 +196,7 @@ const ProviderProfile = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

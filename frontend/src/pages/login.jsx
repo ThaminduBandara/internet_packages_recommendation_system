@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";  // Use this for navigation
+import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../config/api";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -65,59 +66,63 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
-      <div className="w-full max-w-md p-10 bg-white rounded-3xl shadow-2xl border border-gray-200">
-        <h1 className="text-3xl font-extrabold text-center text-blue-600 mb-2">Welcome Back!</h1>
-        <p className="text-center text-green-700 mb-8 font-medium">
-          Sign in to choose the best and cost-effective mobile package
-        </p>
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
+      <div className="flex items-center justify-center flex-1">
+        <div className="w-full max-w-md p-10 bg-white rounded-3xl shadow-2xl border border-gray-200">
+          <h1 className="text-3xl font-extrabold text-center text-blue-600 mb-1">PickPlan</h1>
+          <p className="text-center text-green-600 mb-6 font-medium text-sm">
+            We choose the perfect internet plan for you
+          </p>
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Welcome Back!</h2>
 
-        {error && (
-          <div className="mb-6 p-3 text-red-700 bg-red-100 border border-red-300 rounded-lg text-center font-medium animate-pulse">
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className="mb-6 p-3 text-red-700 bg-red-100 border border-red-300 rounded-lg text-center font-medium animate-pulse">
+              {error}
+            </div>
+          )}
 
-        {success && (
-          <div className="mb-6 p-3 text-green-700 bg-green-100 border border-green-300 rounded-lg text-center font-medium animate-pulse">
-            {success}
-          </div>
-        )}
+          {success && (
+            <div className="mb-6 p-3 text-green-700 bg-green-100 border border-green-300 rounded-lg text-center font-medium animate-pulse">
+              {success}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
-          />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
+            />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
-          />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
+            />
 
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-green-600 transition-all shadow-lg hover:shadow-xl"
-          >
-            Login
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-green-600 transition-all shadow-lg hover:shadow-xl"
+            >
+              Login
+            </button>
+          </form>
 
-        <p className="mt-6 text-center text-gray-500 text-sm">
-          Don't have an account?{" "}
-          <a href="/signup" className="text-blue-600 font-medium hover:underline">
-            Signup
-          </a>
-        </p>
+          <p className="mt-6 text-center text-gray-500 text-sm">
+            Don't have an account?{" "}
+            <a href="/signup" className="text-blue-600 font-medium hover:underline">
+              Signup
+            </a>
+          </p>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
