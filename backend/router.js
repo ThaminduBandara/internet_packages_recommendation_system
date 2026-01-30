@@ -16,11 +16,11 @@ router.delete('/users/:userId', authenticateToken, checkAdminRole, deleteUserByA
 
 
 // Package routes
-router.post('/packages', authenticateToken, createPackage);  // Create a new package (admin-only or authenticated)
-router.get('/packages', authenticateToken, getAllPackages);  // Get all packages (admin or authenticated users)
-router.get('/packages/:serviceProvider', authenticateToken, getPackagesByServiceProvider);  // Get packages by service provider (admin or authenticated users)
-router.put('/packages/:packageId', authenticateToken, updatePackage);  // Update a package (admin or authenticated users)
-router.delete('/packages/:packageId', authenticateToken, deletePackage);  // Delete a package (admin-only)
+router.post('/packages', authenticateToken, createPackage);  // Create a new package (provider-only)
+router.get('/packages', getAllPackages);  // Get all packages (public access for guests)
+router.get('/packages/:serviceProvider', getPackagesByServiceProvider);  // Get packages by service provider (public access for guests)
+router.put('/packages/:packageId', authenticateToken, updatePackage);  // Update a package (provider)
+router.delete('/packages/:packageId', authenticateToken, deletePackage);  // Delete a package (provider)
 
 
 

@@ -2,33 +2,42 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from './pages/login';
 import Signup from './pages/signup';
-import AdminHome from './pages/adminhome';  // Import Admin Home page
-// import UserHome from './pages/UserHome';    // Import User Home page
+import UserHome from './pages/userhome';
+import UserProfile from './pages/userprofile';
+import ProviderDashboard from './pages/providerdashboard';
+import AddPackage from './pages/addpackage';
+import EditPackage from './pages/editpackage';
+import PackageView from './pages/packageview';
+import ProviderProfile from './pages/users';
+import GuestRecommendation from './pages/guest';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Default route (Signup) */}
-        <Route path="/" element={<Signup />} />
-        
-        {/* Signup Route */}
+        {/* Default and auth routes */}
+        <Route path="/" element={<GuestRecommendation />} />
+        <Route path="/guest" element={<GuestRecommendation />} />
         <Route path="/signup" element={<Signup />} />
-        
-        {/* Login Route */}
         <Route path="/login" element={<Login />} />
 
-        {/* Admin Home Page (accessible only for admin) */}
-        <Route path="/admin-home" element={<AdminHome />} />
+        {/* Normal User Routes */}
+        <Route path="/user-home" element={<UserHome />} />
+        <Route path="/user-profile" element={<UserProfile />} />
 
-        {/* User Home Page (accessible only for normal users) */}
-        {/* <Route path="/user-home" element={<UserHome />} /> */}
+        {/* Service Provider Routes */}
+        <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+        <Route path="/add-package" element={<AddPackage />} />
+        <Route path="/edit-package/:packageId" element={<EditPackage />} />
+        <Route path="/package-view/:packageId" element={<PackageView />} />
+        <Route path="/provider-profile" element={<ProviderProfile />} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
+
 
 
 

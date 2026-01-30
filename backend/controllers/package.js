@@ -3,11 +3,11 @@ const Package = require('../models/packageModel');
 
 const createPackage = async (req, res) => {
 
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: "Access denied, admin only" });
+  if (req.user.role !== 'admin' && req.user.role !== 'provider') {
+    return res.status(403).json({ message: "Access denied, provider only" });
   }
 
-  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider } = req.body;
+  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider, socialMedia } = req.body;
 
   if (!name || !validationTime || !price || !anytimeData || !nightTimeData || !callMinutes || !sms || !serviceProvider) {
     return res.status(400).json({ message: "All fields are required." });
@@ -23,6 +23,7 @@ const createPackage = async (req, res) => {
       callMinutes,
       sms,
       serviceProvider,
+      socialMedia: socialMedia || false,
     });
 
     await newPackage.save();
@@ -60,12 +61,12 @@ const getPackagesByServiceProvider = async (req, res) => {
 
 const updatePackage = async (req, res) => {
   const { packageId } = req.params;
-  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider } = req.body;
+  const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, socialMedia } = req.body;
 
   try {
     const updatedPackage = await Package.findByIdAndUpdate(
       packageId,
-      { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider },
+      { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, socialMedia },
       { new: true }  
     );
 

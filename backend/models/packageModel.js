@@ -35,6 +35,10 @@ const packageSchema = new Schema(
       type: String,
       required: true, 
     },
+    socialMedia: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }  
 );

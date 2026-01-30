@@ -39,19 +39,18 @@ export default function Login() {
 
         // Store the JWT token
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        // Get the role of the user (admin or user)
+        // Get the role of the user
         const role = response.data.user.role;
 
-        // Show an alert to indicate whether the user is an admin or a normal user
+        // Navigate based on role
         if (role === "admin") {
-          alert("You are logged in as an Admin");
-          // Optionally, you can navigate to the admin page (remove alert if needed)
-          navigate("/admin-home");
+          navigate("/provider-dashboard");
+        } else if (role === "provider") {
+          navigate("/provider-dashboard");
         } else {
-          alert("You are logged in as a Normal User");
-          // Optionally, you can navigate to the user home page (remove alert if needed)
-          // navigate("/user-home");
+          navigate("/user-home");
         }
 
         // Reset form data

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
 
-const ProviderProfile = () => {
+const UserProfile = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -85,12 +85,12 @@ const ProviderProfile = () => {
     <div className="min-h-screen bg-gradient-to-r from-blue-200 via-green-100 to-green-200">
       {/* Navbar */}
       <nav className="flex items-center justify-between bg-blue-600 p-4 text-white shadow-lg">
-        <h1 className="text-2xl font-bold">Service Provider Profile</h1>
+        <h1 className="text-2xl font-bold">My Profile</h1>
         <button
-          onClick={() => navigate("/provider-dashboard")}
+          onClick={() => navigate("/user-home")}
           className="bg-blue-500 px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
         >
-          Back to Dashboard
+          Back to Home
         </button>
       </nav>
 
@@ -113,7 +113,7 @@ const ProviderProfile = () => {
             <div>
               <div className="space-y-6 mb-6">
                 <div>
-                  <p className="text-gray-600 text-sm font-semibold">Company Name</p>
+                  <p className="text-gray-600 text-sm font-semibold">Username</p>
                   <p className="text-2xl font-bold text-blue-600">{userData?.username}</p>
                 </div>
                 <div>
@@ -122,7 +122,7 @@ const ProviderProfile = () => {
                 </div>
                 <div>
                   <p className="text-gray-600 text-sm font-semibold">Account Type</p>
-                  <p className="text-xl font-semibold text-gray-800">Service Provider</p>
+                  <p className="text-xl font-semibold text-gray-800">Normal User</p>
                 </div>
               </div>
 
@@ -143,7 +143,7 @@ const ProviderProfile = () => {
           ) : (
             <form onSubmit={handleUpdate} className="space-y-6">
               <div>
-                <label className="block text-gray-700 font-semibold mb-2">Company Name</label>
+                <label className="block text-gray-700 font-semibold mb-2">Username</label>
                 <input
                   type="text"
                   name="username"
@@ -199,4 +199,4 @@ const ProviderProfile = () => {
   );
 };
 
-export default ProviderProfile;
+export default UserProfile;

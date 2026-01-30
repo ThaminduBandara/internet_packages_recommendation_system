@@ -9,6 +9,7 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "user",
   });
 
   const [error, setError] = useState("");
@@ -40,6 +41,7 @@ export default function Signup() {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        role: formData.role,
       });
 
       if (response.status === 201) {
@@ -50,6 +52,7 @@ export default function Signup() {
           email: "",
           password: "",
           confirmPassword: "",
+          role: "user",
         });
 
         // Redirect the user to the login page
@@ -96,6 +99,16 @@ export default function Signup() {
             onChange={handleChange}
             className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
           />
+
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none transition shadow-sm hover:shadow-md"
+          >
+            <option value="user">Normal User</option>
+            <option value="provider">Service Provider</option>
+          </select>
 
           <input
             type="password"
