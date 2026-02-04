@@ -1,43 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../config/api";
 
 const AdminHome = () => {
   const navigate = useNavigate();
   const [packages, setPackages] = useState([]);
+  const [serviceProviders, setServiceProviders] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  
-  const serviceProviders = [
-    { name: "Mobitel", image: "https://via.placeholder.com/150" },
-    { name: "Hutch", image: "https://via.placeholder.com/150" },
-    { name: "Dialog", image: "https://via.placeholder.com/150" },
-  ];
+  useEffect(() => {
+    fetchServiceProviders();
+    fetchAllPackages();
+  }, []);
 
- 
-  const hardcodedPackages = {
-    Mobitel: [
-      { _id: "1", name: "Mobitel Package 1", anytimeData: 5, nightData: 2, callMinutes: 100, sms: 50 },
-      { _id: "2", name: "Mobitel Package 2", anytimeData: 10, nightData: 5, callMinutes: 200, sms: 100 },
-    ],
-    Hutch: [
-      { _id: "3", name: "Hutch Package 1", anytimeData: 3, nightData: 1, callMinutes: 50, sms: 30 },
-      { _id: "4", name: "Hutch Package 2", anytimeData: 8, nightData: 4, callMinutes: 150, sms: 80 },
-    ],
-    Dialog: [
-      { _id: "5", name: "Dialog Package 1", anytimeData: 7, nightData: 3, callMinutes: 120, sms: 60 },
-      { _id: "6", name: "Dialog Package 2", anytimeData: 12, nightData: 6, callMinutes: 250, sms: 150 },
-    ],
+  const fetchServiceProviders = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/service-providers`);
+      if (response.data.length > 0) {
+        setServiceProviders(response.data.map(provider => ({ name: provider, image: "https://via.placeholder.com/150" })));
+      } else {
+        setServiceProviders([
+          { name: "Mobitel", image: "https://via.placeholder.com/150" },
+          { name: "Hutch", image: "https://via.placeholder.com/150" },
+          { name: "Dialog", image: "https://via.placeholder.com/150" },
+        ]);
+      }
+    } catch (error) {
+      console.log("Could not fetch service providers - using defaults");
+      setServiceProviders([
+        { name: "Mobitel", image: "https://via.placeholder.com/150" },
+        { name: "Hutch", image: "https://via.placeholder.com/150" },
+        { name: "Dialog", image: "https://via.placeholder.com/150" },
+      ]);
+    }
   };
 
-  
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setPackages(hardcodedPackages);
+  const fetchAllPackages = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_BASE_URL}/api/packages`);
+      const packagesMap = {};
+      response.data.forEach(pkg => {
+        if (!packagesMap[pkg.serviceProvider]) {
+          packagesMap[pkg.serviceProvider] = [];
+        }
+        packagesMap[pkg.serviceProvider].push(pkg);
+      });
+      setPackages(packagesMap);
+    } catch (error) {
+      console.log("Could not fetch packages");
+    } finally {
       setLoading(false);
-    }, 1000); 
-  }, []);
+    }
+  };
 
  
   const handleLogout = () => {

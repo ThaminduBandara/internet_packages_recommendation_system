@@ -103,12 +103,26 @@ const deletePackage = async (req, res) => {
   }
 };
 
+
+const getServiceProviders = async (req, res) => {
+  try {
+    const providers = await Package.distinct('serviceProvider');
+    if (!providers || providers.length === 0) {
+      return res.status(200).json([]);
+    }
+    res.status(200).json(providers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createPackage,
   getAllPackages,
   getPackagesByServiceProvider,
   updatePackage,
-  deletePackage
+  deletePackage,
+  getServiceProviders
 };
 
 

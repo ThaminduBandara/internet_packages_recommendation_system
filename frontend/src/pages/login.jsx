@@ -91,7 +91,7 @@ export default function Login() {
         </div>
       </nav>
 
-      <div className="flex items-center justify-center flex-1">
+      <div className="flex items-center justify-center flex-1 mt-4">
         <div className="w-full max-w-md p-10 bg-white rounded-3xl shadow-2xl border border-gray-200">
           <h1 className="text-3xl font-extrabold text-center text-blue-600 mb-1">PickPlan</h1>
           <p className="text-center text-green-600 mb-6 font-medium text-sm">

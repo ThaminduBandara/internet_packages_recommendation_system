@@ -26,8 +26,25 @@ const GuestRecommendation = () => {
   const availableSocialMedia = ["WhatsApp", "Facebook", "Instagram", "YouTube", "TikTok", "Twitter"];
 
   useEffect(() => {
+    fetchServiceProviders();
+  }, []);
+
+  useEffect(() => {
     fetchPackages();
   }, [formData.serviceProvider]);
+
+  const fetchServiceProviders = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/service-providers`);
+      if (response.data.length > 0) {
+        setServiceProviders(response.data);
+        setFormData(prev => ({ ...prev, serviceProvider: response.data[0] }));
+      }
+    } catch (error) {
+      console.log("Could not fetch service providers - using defaults");
+      setServiceProviders(["Mobitel", "Hutch", "Dialog"]);
+    }
+  };
 
   const fetchPackages = async () => {
     try {

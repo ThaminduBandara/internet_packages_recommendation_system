@@ -4,7 +4,7 @@ const router = express.Router();
 
 const { createUser, loginUser, editUserProfile, deleteUser, getAllUsers, deleteUserByAdmin } = require('./controllers/user');
 const { authenticateToken, checkAdminRole } = require('./middleware/auth');
-const { createPackage, getAllPackages, getPackagesByServiceProvider, updatePackage, deletePackage } = require('./controllers/package');
+const { createPackage, getAllPackages, getPackagesByServiceProvider, updatePackage, deletePackage, getServiceProviders } = require('./controllers/package');
 
 //User routes
 router.post('/createuser', createUser);   // Create a new user (signup)
@@ -18,6 +18,7 @@ router.delete('/users/:userId', authenticateToken, checkAdminRole, deleteUserByA
 // Package routes
 router.post('/packages', authenticateToken, createPackage);  // Create a new package (provider-only)
 router.get('/packages', getAllPackages);  // Get all packages (public access for guests)
+router.get('/service-providers', getServiceProviders);  // Get all service providers (public access)
 router.get('/packages/:serviceProvider', getPackagesByServiceProvider);  // Get packages by service provider (public access for guests)
 router.put('/packages/:packageId', authenticateToken, updatePackage);  // Update a package (provider)
 router.delete('/packages/:packageId', authenticateToken, deletePackage);  // Delete a package (provider)
