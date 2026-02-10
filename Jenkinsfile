@@ -62,11 +62,11 @@ pipeline {
       steps {
         sshagent(['ec2-ssh-key']) {
           sh '''
-            ssh -o StrictHostKeyChecking=no ubuntu@3.6.90.33 << 'EOF'
-              cd /home/ubuntu/iprs
-              docker compose pull
+            ssh -o StrictHostKeyChecking=no ubuntu@3.6.90.33 "
+              cd /home/ubuntu/iprs &&
+              docker compose pull &&
               docker compose up -d
-            EOF
+            "
           '''
         }
       }
@@ -75,10 +75,10 @@ pipeline {
 
   post {
     success {
-      echo "✅ CI/CD pipeline completed successfully!"
+      echo " CI/CD pipeline completed successfully!"
     }
     failure {
-      echo "❌ Pipeline failed — check logs above."
+      echo " Pipeline failed — check logs above."
     }
   }
 }
