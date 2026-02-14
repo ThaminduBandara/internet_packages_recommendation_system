@@ -401,7 +401,7 @@ const UserHome = () => {
             onClick={recommendPackage}
             className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-green-600 transition-all shadow-lg"
           >
-            Get Recommendation
+            Thamindu
           </button>
         </div>
 
