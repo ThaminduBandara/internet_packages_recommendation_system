@@ -5,7 +5,7 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
     FRONTEND_IMAGE = "thamindubandara/internet_packages_recommendation_system-frontend"
     BACKEND_IMAGE  = "thamindubandara/internet_packages_recommendation_system-backend"
-    EC2_IP = "3.6.90.33"
+    EC2_IP = "65.2.189.17"
   }
 
   stages {
