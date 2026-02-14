@@ -100,7 +100,7 @@ export default function Signup() {
           <p className="text-center text-green-600 mb-6 font-medium text-sm">
             We choose the best internet plan for you...
           </p>
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Create Account</h2>
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">thamindu</h2>
 
           {error && (
             <div className="mb-6 p-3 text-red-700 bg-red-100 border border-red-300 rounded-lg text-center font-medium animate-pulse">
