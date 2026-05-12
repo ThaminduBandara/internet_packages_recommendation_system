@@ -13,6 +13,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'API is running' });
 });
 
+// Base API route for gateway health checks
+app.get('/api', (req, res) => {
+  res.json({ message: 'API base route is running' });
+});
+
 // Use the imported router for API routes
 app.use('/api', router); // All routes starting with '/api' will use the router
 
