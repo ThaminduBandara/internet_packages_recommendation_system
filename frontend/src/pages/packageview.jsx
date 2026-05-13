@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+import { buildAuthHeaders, getApiToken } from "../config/auth";
 
 const PackageView = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const PackageView = () => {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
+  const apiToken = getApiToken();
 
   useEffect(() => {
     if (!token) {
@@ -22,8 +24,8 @@ const PackageView = () => {
 
   const fetchPackageData = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/packages`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get(`${API_BASE_URL}/packages`, {
+        headers: buildAuthHeaders(apiToken),
       });
       const pkg = response.data.find((p) => p._id === packageId);
       if (pkg) {
@@ -65,8 +67,8 @@ const PackageView = () => {
   const handleDeletePackage = async () => {
     if (window.confirm("Are you sure you want to delete this package?")) {
       try {
-        await axios.delete(`${API_BASE_URL}/api/packages/${packageId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        await axios.delete(`${API_BASE_URL}/packages/${packageId}`, {
+          headers: buildAuthHeaders(apiToken),
         });
         alert("Package deleted successfully");
         navigate("/provider-dashboard");

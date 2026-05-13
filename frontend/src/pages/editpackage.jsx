@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+import { buildAuthHeaders, getApiToken } from "../config/auth";
 
 const EditPackage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const EditPackage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const token = localStorage.getItem("token");
+  const apiToken = getApiToken();
 
   useEffect(() => {
     if (!token) {
@@ -36,8 +38,8 @@ const EditPackage = () => {
 
   const fetchPackageData = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/packages`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get(`${API_BASE_URL}/packages`, {
+        headers: buildAuthHeaders(apiToken),
       });
       const pkg = response.data.find((p) => p._id === packageId);
       if (pkg) {
@@ -114,7 +116,7 @@ const EditPackage = () => {
 
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/api/packages/${packageId}`,
+        `${API_BASE_URL}/packages/${packageId}`,
         {
           name: formData.name,
           validationTime: parseInt(formData.validationTime),
@@ -127,7 +129,7 @@ const EditPackage = () => {
           coverImage: formData.coverImage,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: buildAuthHeaders(apiToken),
         }
       );
 

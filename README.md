@@ -25,11 +25,13 @@ Required values:
 - `MONGO_URI` - MongoDB connection string
 - `SECRET_KEY` - JWT signing secret
 - `PORT` - Backend port, defaults to `4000`
-- `HOST` - Host to bind to, defaults to `localhost`
+- `HOST` - Host to bind to, defaults to `0.0.0.0`
 
 The frontend uses:
 
 - `REACT_APP_API_URL` - Base URL for the backend API
+
+For WSO2 API Manager integration, set `REACT_APP_API_URL` to your WSO2 gateway URL, for example `http://localhost:8280/packages/v1`.
 
 ## Run Locally Without Docker
 
@@ -64,6 +66,20 @@ This starts:
 - frontend on `http://localhost:3000`
 - backend on `http://localhost:4000`
 - MongoDB on `localhost:27017`
+
+If you are using WSO2 API Manager, publish the backend API in WSO2 with a gateway base such as `http://localhost:8280/packages/v1`, then rebuild the frontend so it points to that gateway URL instead of `http://localhost:4000`.
+
+### WSO2 API Manager Setup
+
+If WSO2 API Manager is already installed on your machine, you do not need to add it as a container in this project. Instead:
+
+1. Start WSO2 API Manager locally.
+2. Publish the backend endpoint as an API in the Publisher.
+3. Use the backend URL as `http://localhost:4000/api` in WSO2 so the gateway forwards to your Express app.
+4. Set the frontend API base URL to the WSO2 gateway endpoint, for example `http://localhost:8280/packages/v1`.
+5. Rebuild the frontend so the React app sends requests through WSO2.
+
+The backend is configured to bind to `0.0.0.0`, which allows Docker and WSO2 to reach it reliably.
 
 ## CI/CD
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+import { buildAuthHeaders, clearAuthTokens, getApiToken } from "../config/auth";
 
 const ProviderProfile = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const ProviderProfile = () => {
   const [success, setSuccess] = useState("");
 
   const token = localStorage.getItem("token");
+  const apiToken = getApiToken();
 
   useEffect(() => {
     if (!token) {
@@ -44,14 +46,14 @@ const ProviderProfile = () => {
 
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/api/profile`,
+        `${API_BASE_URL}/profile`,
         {
           username: formData.username,
           email: formData.email,
           password: formData.password || undefined,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: buildAuthHeaders(apiToken),
         }
       );
 
@@ -69,12 +71,11 @@ const ProviderProfile = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm("Are you sure you want to delete your account? This cannot be undone.")) {
       try {
-        await axios.delete(`${API_BASE_URL}/api/delete`, {
-          headers: { Authorization: `Bearer ${token}` },
+        await axios.delete(`${API_BASE_URL}/delete`, {
+          headers: buildAuthHeaders(apiToken),
         });
         alert("Account deleted successfully");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        clearAuthTokens();
         navigate("/login");
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete account");

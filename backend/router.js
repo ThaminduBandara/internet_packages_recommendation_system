@@ -16,12 +16,12 @@ router.delete('/users/:userId', authenticateToken, checkAdminRole, deleteUserByA
 
 
 // Package routes
-router.post('/packages', authenticateToken, createPackage);  // Create a new package (provider-only)
+router.post('/packages', createPackage);  // Create a new package (gateway-protected)
 router.get('/packages', getAllPackages);  // Get all packages (public access for guests)
 router.get('/service-providers', getServiceProviders);  // Get all service providers (public access)
 router.get('/packages/:serviceProvider', getPackagesByServiceProvider);  // Get packages by service provider (public access for guests)
-router.put('/packages/:packageId', authenticateToken, updatePackage);  // Update a package (provider)
-router.delete('/packages/:packageId', authenticateToken, deletePackage);  // Delete a package (provider)
+router.put('/packages/:packageId', updatePackage);  // Update a package (gateway-protected)
+router.delete('/packages/:packageId', deletePackage);  // Delete a package (gateway-protected)
 
 
 

@@ -2,11 +2,6 @@ const Package = require('../models/packageModel');
 
 
 const createPackage = async (req, res) => {
-
-  if (req.user.role !== 'admin' && req.user.role !== 'provider') {
-    return res.status(403).json({ message: "Access denied, provider only" });
-  }
-
   const { name, validationTime, price, anytimeData, nightTimeData, callMinutes, sms, serviceProvider, socialMedia, coverImage } = req.body;
 
   if (!name || !validationTime || !price || !anytimeData || !nightTimeData || !callMinutes || !sms || !serviceProvider) {

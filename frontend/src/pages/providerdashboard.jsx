@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+import { buildAuthHeaders, clearAuthTokens, getApiToken } from "../config/auth";
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const ProviderDashboard = () => {
   });
 
   const token = localStorage.getItem("token");
+  const apiToken = getApiToken();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
@@ -26,11 +28,26 @@ const ProviderDashboard = () => {
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/api/packages`, {
-        headers: { Authorization: `Bearer ${token}` },
+      console.log("📡 Provider Dashboard: GET packages from", `${API_BASE_URL}/packages`);
+      console.log("🔐 Token sent:", !!apiToken);
+      const response = await axios.get(`${API_BASE_URL}/packages`, {
+        headers: buildAuthHeaders(apiToken),
       });
-     
-      const filteredPackages = response.data.filter(
+      console.log("✅ Response status:", response.status, "Packages:", response.data?.length);
+
+      const packagesList = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.packages)
+          ? response.data.packages
+          : Array.isArray(response.data?.data)
+            ? response.data.data
+            : [];
+
+      if (!Array.isArray(packagesList)) {
+        throw new Error("Unexpected packages response format");
+      }
+
+      const filteredPackages = packagesList.filter(
         (pkg) => pkg.serviceProvider === user.username
       );
       setPackages(filteredPackages);
@@ -39,39 +56,11 @@ const ProviderDashboard = () => {
         activePackages: filteredPackages.length,
       });
     } catch (error) {
-      console.log("Demo data loaded");
-      const demoData = [
-        {
-          _id: "1",
-          name: "Starter",
-          validationTime: 30,
-          price: 500,
-          anytimeData: 5,
-          nightTimeData: 2,
-          callMinutes: 100,
-          sms: 50,
-          serviceProvider: "Demo Provider",
-          socialMedia: ["WhatsApp", "Facebook"],
-          coverImage: "",
-        },
-        {
-          _id: "2",
-          name: "Professional",
-          validationTime: 30,
-          price: 1000,
-          anytimeData: 20,
-          nightTimeData: 10,
-          callMinutes: 500,
-          sms: 200,
-          serviceProvider: "Demo Provider",
-          socialMedia: ["YouTube", "Instagram"],
-          coverImage: "",
-        },
-      ];
-      setPackages(demoData);
+      console.error("Failed to load packages from gateway", error);
+      setPackages([]);
       setStats({
-        totalPackages: demoData.length,
-        activePackages: demoData.length,
+        totalPackages: 0,
+        activePackages: 0,
       });
     } finally {
       setLoading(false);
@@ -79,16 +68,15 @@ const ProviderDashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearAuthTokens();
     navigate("/login");
   };
 
   const handleDeletePackage = async (packageId) => {
     if (window.confirm("Are you sure you want to delete this package?")) {
       try {
-        await axios.delete(`${API_BASE_URL}/api/packages/${packageId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        await axios.delete(`${API_BASE_URL}/packages/${packageId}`, {
+          headers: buildAuthHeaders(apiToken),
         });
         setPackages(packages.filter((pkg) => pkg._id !== packageId));
         alert("Package deleted successfully");

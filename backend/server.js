@@ -3,7 +3,7 @@ const app = require('./app');
 require('dotenv').config();  // Load environment variables from .env file
 
 const port = process.env.PORT || 4000; // Port to listen on, default is 4000
-const host = process.env.HOST || 'localhost'; // Host to bind to, default is 'localhost'
+const host = process.env.HOST || '0.0.0.0'; // Bind to all interfaces so Docker and WSO2 can reach the API
 const uri = process.env.MONGO_URI; // MongoDB URI from environment variables
 
 // Connect to MongoDB

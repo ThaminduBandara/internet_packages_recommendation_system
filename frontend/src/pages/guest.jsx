@@ -35,7 +35,7 @@ const GuestRecommendation = () => {
 
   const fetchServiceProviders = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/service-providers`);
+      const response = await axios.get(`${API_BASE_URL}/service-providers`);
       if (response.data.length > 0) {
         setServiceProviders(response.data);
         setFormData(prev => ({ ...prev, serviceProvider: response.data[0] }));
@@ -50,7 +50,7 @@ const GuestRecommendation = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${API_BASE_URL}/api/packages/${formData.serviceProvider}`
+        `${API_BASE_URL}/packages/${formData.serviceProvider}`
       );
       setPackages(response.data);
       setFilteredPackages(response.data);

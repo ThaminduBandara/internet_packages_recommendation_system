@@ -1,11 +1,14 @@
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_API_URL: http://localhost:8280/packages/v1/v1
     container_name: frontend_container
     ports:
       - "3000:3000"
     environment:
-      REACT_APP_API_URL: http://localhost:4000
+      REACT_APP_API_URL: http://localhost:8280/packages/v1/v1
     depends_on:
       - backend
 
@@ -14,6 +17,8 @@ services:
     container_name: backend_container
     ports:
       - "4000:4000"
+    environment:
+      HOST: 0.0.0.0
     env_file:
       - ./backend/.env
     depends_on:

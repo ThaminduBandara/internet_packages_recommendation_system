@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
+import { clearAuthTokens } from "../config/auth";
 
 const AdminHome = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const AdminHome = () => {
 
   const fetchServiceProviders = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/service-providers`);
+      const response = await axios.get(`${API_BASE_URL}/service-providers`);
       if (response.data.length > 0) {
         setServiceProviders(response.data.map(provider => ({ name: provider, image: "https://via.placeholder.com/150" })));
       } else {
@@ -39,7 +40,7 @@ const AdminHome = () => {
   const fetchAllPackages = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_BASE_URL}/api/packages`);
+      const response = await axios.get(`${API_BASE_URL}/packages`);
       const packagesMap = {};
       response.data.forEach(pkg => {
         if (!packagesMap[pkg.serviceProvider]) {
@@ -57,7 +58,7 @@ const AdminHome = () => {
 
  
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    clearAuthTokens();
     navigate("/login");
   };
 

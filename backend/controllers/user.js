@@ -57,13 +57,76 @@ const loginUser = async (req, res) => {
     const admin = admins.find(admin => admin.email === email);
 
     if (admin) {
-      
       if (password === admin.password) {
         const token = jwt.sign(
           { email: admin.email, role: 'admin' },
           SECRET_KEY,
           { expiresIn: '1h' }
         );
+        
+        // Request WSO2 token for admin as well
+        const wso2TokenUrl = process.env.WSO2_TOKEN_URL || process.env.WSO2_OAUTH_TOKEN_URL;
+        const wso2ClientId = process.env.WSO2_CLIENT_ID;
+        const wso2ClientSecret = process.env.WSO2_CLIENT_SECRET;
+
+        if (wso2TokenUrl && wso2ClientId && wso2ClientSecret) {
+          try {
+            const url = new URL(wso2TokenUrl);
+            const postData = 'grant_type=client_credentials';
+
+            const httpsLib = url.protocol === 'https:' ? require('https') : require('http');
+            const auth = Buffer.from(`${wso2ClientId}:${wso2ClientSecret}`).toString('base64');
+
+            const options = {
+              hostname: url.hostname,
+              port: url.port || (url.protocol === 'https:' ? 443 : 80),
+              path: url.pathname + (url.search || ''),
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': Buffer.byteLength(postData),
+                'Authorization': `Basic ${auth}`
+              }
+            };
+
+            if (url.protocol === 'https:' && process.env.WSO2_ALLOW_SELF_SIGNED === 'true') {
+              options.rejectUnauthorized = false;
+              options.agent = new httpsLib.Agent({ rejectUnauthorized: false });
+            }
+
+            const tokenResponse = await new Promise((resolve, reject) => {
+              const req2 = httpsLib.request(options, (resp) => {
+                let data = '';
+                resp.on('data', (chunk) => { data += chunk; });
+                resp.on('end', () => {
+                  try {
+                    const parsed = JSON.parse(data);
+                    resolve({ statusCode: resp.statusCode, body: parsed });
+                  } catch (e) {
+                    reject(e);
+                  }
+                });
+              });
+              req2.on('error', (err) => reject(err));
+              req2.write(postData);
+              req2.end();
+            });
+
+            if (tokenResponse && tokenResponse.statusCode >= 200 && tokenResponse.statusCode < 300) {
+              return res.status(200).json({
+                message: 'Login successful',
+                token: token,
+                access_token: tokenResponse.body.access_token || tokenResponse.body.token,
+                token_type: tokenResponse.body.token_type,
+                expires_in: tokenResponse.body.expires_in,
+                user: { email: admin.email, role: 'admin' }
+              });
+            }
+          } catch (err) {
+            console.log('WSO2 token exchange failed for admin:', err.message || err);
+          }
+        }
+
         return res.status(200).json({
           message: "Login successful",
           token,
@@ -89,6 +152,73 @@ const loginUser = async (req, res) => {
       { expiresIn: '1h' }
     );
 
+    // If WSO2 token exchange is configured, request an access token from WSO2
+    const wso2TokenUrl = process.env.WSO2_TOKEN_URL || process.env.WSO2_OAUTH_TOKEN_URL;
+    const wso2ClientId = process.env.WSO2_CLIENT_ID;
+    const wso2ClientSecret = process.env.WSO2_CLIENT_SECRET;
+
+    if (wso2TokenUrl && wso2ClientId && wso2ClientSecret) {
+      try {
+        const url = new URL(wso2TokenUrl);
+        const postData = 'grant_type=client_credentials';
+
+        const httpsLib = url.protocol === 'https:' ? require('https') : require('http');
+        const auth = Buffer.from(`${wso2ClientId}:${wso2ClientSecret}`).toString('base64');
+
+        const options = {
+          hostname: url.hostname,
+          port: url.port || (url.protocol === 'https:' ? 443 : 80),
+          path: url.pathname + (url.search || ''),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(postData),
+            'Authorization': `Basic ${auth}`
+          }
+        };
+
+        // Allow self-signed certs in local dev if explicitly allowed
+        if (url.protocol === 'https:' && process.env.WSO2_ALLOW_SELF_SIGNED === 'true') {
+          options.rejectUnauthorized = false;
+          options.agent = new httpsLib.Agent({ rejectUnauthorized: false });
+        }
+
+        const tokenResponse = await new Promise((resolve, reject) => {
+          const req2 = httpsLib.request(options, (resp) => {
+            let data = '';
+            resp.on('data', (chunk) => { data += chunk; });
+            resp.on('end', () => {
+              try {
+                const parsed = JSON.parse(data);
+                resolve({ statusCode: resp.statusCode, body: parsed });
+              } catch (e) {
+                reject(e);
+              }
+            });
+          });
+          req2.on('error', (err) => reject(err));
+          req2.write(postData);
+          req2.end();
+        });
+
+        if (tokenResponse && tokenResponse.statusCode >= 200 && tokenResponse.statusCode < 300) {
+          // return WSO2 access token along with local info
+          return res.status(200).json({
+            message: 'Login successful',
+            token: token, // local token still returned for compatibility
+            access_token: tokenResponse.body.access_token || tokenResponse.body.token,
+            token_type: tokenResponse.body.token_type,
+            expires_in: tokenResponse.body.expires_in,
+            user: { _id: user._id, username: user.username, email: user.email, role: user.role }
+          });
+        }
+      } catch (err) {
+        // If exchange failed, fall back to returning local token
+        console.log('WSO2 token exchange failed:', err.message || err);
+      }
+    }
+
+    // Default: return local JWT
     res.status(200).json({
       message: "Login successful",
       token,

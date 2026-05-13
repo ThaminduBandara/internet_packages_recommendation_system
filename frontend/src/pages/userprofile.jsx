@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+import { buildAuthHeaders, clearAuthTokens, getApiToken } from "../config/auth";
+
+// Profile endpoint goes directly to backend, not through gateway
+const PROFILE_BASE_URL = process.env.REACT_APP_AUTH_API_URL || "http://localhost:4000/api";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -17,8 +20,16 @@ const UserProfile = () => {
   const [success, setSuccess] = useState("");
 
   const token = localStorage.getItem("token");
+  const apiToken = getApiToken();
 
   useEffect(() => {
+    console.log("Profile Page - Token Debug:", {
+      localToken: token ? "exists" : "missing",
+      apiToken: apiToken ? apiToken.substring(0, 20) + "..." : "missing",
+      access_token: localStorage.getItem("access_token") ? "exists" : "missing",
+      user: localStorage.getItem("user")
+    });
+    
     if (!token) {
       navigate("/login");
     } else {
@@ -42,18 +53,27 @@ const UserProfile = () => {
     setError("");
     setSuccess("");
 
+    // Use local token (contains MongoDB user ID) for profile operations, not WSO2 token
+    const localToken = localStorage.getItem("token");
+    const headers = buildAuthHeaders(localToken);
+
+    console.log("=== Profile Update Request ===");
+    console.log("Using local JWT token for profile update (contains MongoDB user ID)");
+    console.log("Headers:", headers);
+
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/api/profile`,
+        `${PROFILE_BASE_URL}/profile`,
         {
           username: formData.username,
           email: formData.email,
           password: formData.password || undefined,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: headers,
         }
       );
+      console.log("Response status:", response.status);
 
       if (response.status === 200) {
         setSuccess("Profile updated successfully!");
@@ -69,12 +89,13 @@ const UserProfile = () => {
   const handleDeleteAccount = async () => {
     if (window.confirm("Are you sure you want to delete your account? This cannot be undone.")) {
       try {
-        await axios.delete(`${API_BASE_URL}/api/delete`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const localToken = localStorage.getItem("token");
+        const headers = buildAuthHeaders(localToken);
+        await axios.delete(`${PROFILE_BASE_URL}/delete`, {
+          headers: headers,
         });
         alert("Account deleted successfully");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        clearAuthTokens();
         navigate("/login");
       } catch (err) {
         setError(err.response?.data?.message || "Failed to delete account");

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+import { buildAuthHeaders, getApiToken } from "../config/auth";
 
 const AddPackage = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const AddPackage = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const token = localStorage.getItem("token");
+  const apiToken = getApiToken();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleChange = (e) => {
@@ -78,8 +79,10 @@ const AddPackage = () => {
     setSuccess("");
 
     try {
+      console.log("📡 Add Package: POST to", `${API_BASE_URL}/packages`);
+      console.log("🔐 Token sent:", !!apiToken);
       const response = await axios.post(
-        `${API_BASE_URL}/api/packages`,
+        `${API_BASE_URL}/packages`,
         {
           name: formData.name,
           validationTime: parseInt(formData.validationTime),
@@ -93,7 +96,7 @@ const AddPackage = () => {
           coverImage: formData.coverImage,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: buildAuthHeaders(apiToken),
         }
       );
 

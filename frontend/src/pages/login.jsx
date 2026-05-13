@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+
+const AUTH_BASE_URL = process.env.REACT_APP_AUTH_API_URL || "http://localhost:4000/api";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ export default function Login() {
     setSuccess("");
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/login`, {
+      const response = await axios.post(`${AUTH_BASE_URL}/login`, {
         email: formData.email,
         password: formData.password,
       });
@@ -38,8 +39,13 @@ export default function Login() {
       if (response.status === 200) {
         setSuccess("Login successful!");
 
-        // Store the JWT token
+        // Store the local JWT for app session checks and the WSO2 token for gateway calls
         localStorage.setItem("token", response.data.token);
+        if (response.data.access_token) {
+          localStorage.setItem("access_token", response.data.access_token);
+        } else {
+          localStorage.removeItem("access_token");
+        }
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
         // Get the role of the user

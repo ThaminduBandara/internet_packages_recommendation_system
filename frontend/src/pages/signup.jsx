@@ -1,8 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "../config/api";
 import Footer from "../components/Footer";
+
+const AUTH_BASE_URL = process.env.REACT_APP_AUTH_API_URL || "http://localhost:4000/api";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -38,12 +39,14 @@ export default function Signup() {
     setSuccess("");
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/createuser`,  {
+      console.log("📡 Signup: POST to", `${AUTH_BASE_URL}/createuser`);
+      const response = await axios.post(`${AUTH_BASE_URL}/createuser`,  {
         username: formData.username,
         email: formData.email,
         password: formData.password,
         role: formData.role,
       });
+      console.log("✅ Signup response:", response.status);
 
       if (response.status === 201) {
         setSuccess("User created successfully! Please login.");
